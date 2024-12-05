@@ -1,7 +1,6 @@
 package com.example.frontServer.controller
 
 import com.example.frontServer.dto.ResponseToClientDto
-import com.example.frontServer.enum.ErrorCode
 import com.example.frontServer.security.AuthUserDetails
 import com.example.frontServer.service.LikeService
 import io.github.oshai.kotlinlogging.KotlinLogging
@@ -25,21 +24,7 @@ class LikeController(
         @AuthenticationPrincipal user: AuthUserDetails
     ): ResponseEntity<ResponseToClientDto> {
         val isSaved: Boolean = likeService.save(boardId, user.getUserId()) // not null
-        return if (isSaved) {
-            ResponseEntity.ok().body(
-                ResponseToClientDto(
-                    errorCode = null,
-                    data = null
-                )
-            )
-        } else {
-            ResponseEntity.ok().body(
-                ResponseToClientDto(
-                    errorCode = ErrorCode.SAVE_FAILURE,
-                    data = null
-                )
-            )
-        }
+
     }
 
     @GetMapping("/like/users")

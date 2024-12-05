@@ -1,5 +1,5 @@
 package com.example.frontServer.exception
 
-import com.example.frontServer.enum.ErrorCode
+import com.example.frontServer.enum.FrontServerError
 
-class EntitySaveFailure: ApplicationException(ErrorCode.SAVE_FAILURE.ordinal, "Save Failure"){}
+class EntitySaveFailure: ApplicationException(FrontServerError.SAVE_FAILURE.ordinal, "Save Failure"){}

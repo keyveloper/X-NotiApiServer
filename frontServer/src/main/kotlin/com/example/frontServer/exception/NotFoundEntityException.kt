@@ -1,5 +1,5 @@
 package com.example.frontServer.exception
 
-import com.example.frontServer.enum.ErrorCode
+import com.example.frontServer.enum.FrontServerError
 
-class UnKnownIdException: ApplicationException(ErrorCode.UNKNOWN_ID.ordinal, "Unknown Id."){}
+class UnKnownIdException: ApplicationException(FrontServerError.UNKNOWN_ID.ordinal, "Unknown Id."){}

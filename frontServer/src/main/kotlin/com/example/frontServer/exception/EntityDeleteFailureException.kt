@@ -1,6 +1,6 @@
 package com.example.frontServer.exception
 
-import com.example.frontServer.enum.ErrorCode
+import com.example.frontServer.enum.FrontServerError
 
-class EntityDeleteFailureException: ApplicationException(ErrorCode.DELETE_FAILURE.ordinal, "Entity Delete Failure"){
+class EntityDeleteFailureException: ApplicationException(FrontServerError.DELETE_FAILURE.ordinal, "Entity Delete Failure"){
 }

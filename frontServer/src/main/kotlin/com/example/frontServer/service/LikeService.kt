@@ -1,6 +1,10 @@
 package com.example.frontServer.service
 
-import com.example.frontServer.dto.ResponseToServerDto
+import com.example.frontServer.dto.LikeRequest
+import com.example.frontServer.dto.LikeSaveResult
+import com.example.frontServer.dto.LikeServerSaveResponse
+import com.example.frontServer.dto.ServiceServerError
+import com.example.frontServer.enum.FrontServerError
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry
@@ -20,27 +24,42 @@ class LikeService(
     @CircuitBreaker(
         name = "liveApiCircuitBreaker",
         fallbackMethod = "saveFallbackMethod")
-    fun save(boardId: Long, userId: Long): Boolean {
+    fun save(boardId: Long, userId: Long): LikeSaveResult {
         val response = client.post()
             .uri { uriBuilder: UriBuilder ->
                 uriBuilder
-                    .path("/live/like")
-                    .queryParam("boardId", boardId)
-                    .queryParam("userId", userId)
+                    .path("/like")
                     .build()
             }
+            .bodyValue(
+                LikeRequest(
+                    boardId = boardId,
+                    userId = userId,
+                )
+            )
             .headers { headers ->
                 headers.remove(HttpHeaders.AUTHORIZATION)
             }
             .retrieve()
-            .bodyToMono(ResponseToServerDto::class.java)
+            .bodyToMono(LikeServerSaveResponse::class.java)
             .block()
 
-        if (response?.error != null) {
-            logCircuitBreakerInfo()
+        if (response == null) {
+            return LikeSaveResult(
+                error = FrontServerError.UNEXPECTED_ERROR
+            )
         }
-        logCircuitBreakerInfo()
-        return true
+
+        return if (response.error == null) {
+            LikeSaveResult(
+                error = null
+            )
+        } else {
+            LikeSaveResult(
+                error = FrontServerError.UNKNOWN_ID
+                // Server에러 별로 나눠야 하는지 ??
+            )
+        }
     }
 
     @CircuitBreaker(
@@ -68,10 +87,12 @@ class LikeService(
     }
 
     // save 메서드의 fallbackMethod
-    fun saveFallbackMethod(boardId: Long, userId: Long, throwable: Throwable): Boolean {
+    fun saveFallbackMethod(boardId: Long, userId: Long, throwable: Throwable): LikeSaveResult {
         logger.error { "Fallback called in save due to ${throwable.message}" }
         logCircuitBreakerInfo()
-        return false
+        return LikeSaveResult(
+            error = FrontServerError.SERVICE_SERVER_ERROR
+        )
     }
 
     // findAllByBoardId 메서드의 fallbackMethod

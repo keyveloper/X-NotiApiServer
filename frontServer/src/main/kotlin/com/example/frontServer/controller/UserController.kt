@@ -3,7 +3,7 @@ package com.example.frontServer.controller
 import com.example.frontServer.dto.GetUserResponse
 import com.example.frontServer.dto.ResponseToClientDto
 import com.example.frontServer.dto.SignUpRequest
-import com.example.frontServer.enum.ErrorCode
+import com.example.frontServer.enum.FrontServerError
 import com.example.frontServer.enum.SignUpStatus
 import com.example.frontServer.service.UserService
 import io.github.oshai.kotlinlogging.KotlinLogging
@@ -31,7 +31,7 @@ class UserController(
 
             SignUpStatus.DUPLICATED -> ResponseEntity.ok().body(
                 ResponseToClientDto(
-                    errorCode = ErrorCode.SAVE_FAILURE,
+                    errorCode = FrontServerError.SAVE_FAILURE,
                     data = status.message
                 )
             )

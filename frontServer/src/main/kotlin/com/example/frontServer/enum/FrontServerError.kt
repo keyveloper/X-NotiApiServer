@@ -1,7 +1,6 @@
 package com.example.frontServer.enum
 
-enum class ErrorCode {
-
+enum class FrontServerError {
     SAVE_FAILURE,
 
     DELETE_FAILURE,
@@ -9,6 +8,14 @@ enum class ErrorCode {
     NOT_FOUND_404,        // wrong url
 
     UNKNOWN_ID,
+
+
+    // vs
+    UNEXPECTED_ERROR,
+
+    SERVICE_SERVER_ERROR,
+
+    //
 
     CONNECTION_ERROR,
 
