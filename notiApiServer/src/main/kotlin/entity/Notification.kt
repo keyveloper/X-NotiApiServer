@@ -1,8 +1,9 @@
 package org.example.entity
 
 import jakarta.persistence.*
-import org.springframework.data.annotation.CreateAt
+import org.springframework.data.annotation.CreatedDate
 import java.time.LocalDateTime
+
 
 
 @Entity
@@ -16,6 +17,8 @@ class Notification(
 
     val isSent: Boolean,
 
-    @CreateAt
+    @CreatedDate
     val createdAt: LocalDateTime?,
+
+    val message: String
 )
