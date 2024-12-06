@@ -1,6 +1,6 @@
-package org.example.repository
+package com.example.notiApiServer.repository
 
-import org.example.entity.Notification
+import com.example.notiApiServer.entity.Notification
 
 interface NotificationQueryDslRepository {
     fun findInitAll(receiverId: Long): List<Notification>
@@ -9,5 +9,5 @@ interface NotificationQueryDslRepository {
 
     fun findNextAll(receiverId: Long, endId: Long): List<Notification>
 
-    fun saveAll(requests: List<Notification>): Long
+    fun saveAll(notifications: List<Notification>): Long
 }

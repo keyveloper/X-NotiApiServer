@@ -1,4 +1,4 @@
-package org.example.entity
+package com.example.notiApiServer.entity
 
 import jakarta.persistence.*
 import org.springframework.data.annotation.CreatedDate
@@ -11,7 +11,7 @@ class Notification(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long?,
 
-    val publisherId:Long?,
+    val publisherId:Long,
 
     val receiverId:Long,
 

@@ -1,4 +1,4 @@
-package org.example.dto
+package com.example.notiApiServer.dto
 
 data class NotificationSaveRequest(
     val publisherId: Long,

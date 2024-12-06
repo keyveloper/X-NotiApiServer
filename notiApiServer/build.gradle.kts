@@ -52,6 +52,9 @@ dependencies {
     kapt ("com.querydsl:querydsl-apt:5.0.0:jakarta")
     kapt ("jakarta.annotation:jakarta.annotation-api")
     kapt ("jakarta.persistence:jakarta.persistence-api")
+    implementation("com.querydsl:querydsl-sql:5.0.0")    // for insert batch
+    implementation("com.querydsl:querydsl-kotlin:5.0.0")
+
 
 
     // validation
