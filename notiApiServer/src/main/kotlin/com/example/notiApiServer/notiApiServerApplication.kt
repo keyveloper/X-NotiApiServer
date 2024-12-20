@@ -1,9 +1,11 @@
-package org.example.notiapiserver
+package com.example.notiApiServer
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing
 
 @SpringBootApplication
+@EnableJpaAuditing
 class NotiApiServerApplication
 
 fun main(args: Array<String>) {
