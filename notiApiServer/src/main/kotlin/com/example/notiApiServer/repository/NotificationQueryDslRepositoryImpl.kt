@@ -13,7 +13,6 @@ class NotificationQueryDslRepositoryImpl(
         return jpaQueryFactory
             .selectFrom(notification)
             .where(notification.receiverId.eq(receiverId)
-                .and(notification.isSent.eq(false))
             )
             .orderBy(notification.id.desc())
             .limit(10)
@@ -24,7 +23,6 @@ class NotificationQueryDslRepositoryImpl(
         return jpaQueryFactory
             .selectFrom(notification)
             .where(notification.receiverId.eq(receiverId)
-                .and(notification.isSent.eq(false))
                 .and(notification.id.lt(startId))
             )
             .orderBy(notification.id.desc())
@@ -37,7 +35,6 @@ class NotificationQueryDslRepositoryImpl(
             .selectFrom(notification)
             .where(notification.receiverId.eq(receiverId)
                 .and(notification.id.gt(endId))
-                .and(notification.isSent.eq(false))
             )
             .orderBy(notification.id.desc())
             .limit(10)

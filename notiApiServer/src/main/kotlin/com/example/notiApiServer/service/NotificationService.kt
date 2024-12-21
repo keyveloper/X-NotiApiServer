@@ -29,15 +29,16 @@ class NotificationService(
 
     @Transactional
     fun saveAll(requests: List<NotificationSaveRequest>): Int {
+        // save all language
         return notificationRepository.saveAll(
             requests.map {
                 Notification(
-                    publisherId = it.receiverId,
-                    receiverId = it.receiverId,
-                    message =  it.message,
-                    isSent = false,
                     id = null,
-                    createdAt = null
+                    publisherId = it.publisherId,
+                    receiverId = it.receiverId,
+                    notificationType = it.notificationType,
+                    boardId = it.boardId,
+                    createdAt = null,
                 )
             }
         ).size

@@ -1,6 +1,7 @@
 package com.example.notiApiServer.dto
 
 import com.example.notiApiServer.entity.Notification
+import com.example.notiApiServer.enum.NotificationType
 import java.time.LocalDateTime
 
 data class NotificationGetServerResult(
@@ -10,7 +11,9 @@ data class NotificationGetServerResult(
 
     val receiverId: Long, // optional
 
-    val message: String,
+    val notificationType: NotificationType,
+
+    val boardId: Long?,
 
     val createdAt: LocalDateTime
 ) {
@@ -20,7 +23,8 @@ data class NotificationGetServerResult(
                 id = notification.id!!,
                 publisherId = notification.publisherId,
                 receiverId = notification.receiverId,
-                message = notification.message,
+                boardId = notification.boardId,
+                notificationType = notification.notificationType,
                 createdAt = notification.createdAt!!
             )
         }

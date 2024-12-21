@@ -1,5 +1,6 @@
 package com.example.notiApiServer.entity
 
+import com.example.notiApiServer.enum.NotificationType
 import jakarta.persistence.*
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
@@ -16,10 +17,10 @@ class Notification(
 
     val receiverId:Long,
 
-    val isSent: Boolean,
+    val notificationType: NotificationType,
+
+    val boardId: Long?,
 
     @CreatedDate
     var createdAt: LocalDateTime?,
-
-    val message: String
-)
+    )

@@ -1,9 +1,14 @@
 package com.example.notiApiServer.dto
 
+import com.example.notiApiServer.enum.NotificationType
+
 data class NotificationSaveRequest(
     val publisherId: Long,
 
     val receiverId: Long,
 
-    val message: String,
-)
+    val notificationType: NotificationType,
+
+    val boardId: Long?,
+
+    )
