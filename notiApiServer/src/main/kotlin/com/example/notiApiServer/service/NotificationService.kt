@@ -37,7 +37,7 @@ class NotificationService(
                     publisherId = it.publisherId,
                     receiverId = it.receiverId,
                     notificationType = it.notificationType,
-                    boardId = it.boardId,
+                    targetBoardId = it.targetBoardId,
                     createdAt = null,
                 )
             }

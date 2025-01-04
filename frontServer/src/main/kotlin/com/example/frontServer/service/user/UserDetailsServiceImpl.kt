@@ -1,8 +1,8 @@
-package com.example.frontServer.service
+package com.example.frontServer.service.user
 
 import com.example.frontServer.entity.User
-import com.example.frontServer.repository.UserRepository
-import com.example.frontServer.repository.UserRoleRepository
+import com.example.frontServer.repository.user.UserRepository
+import com.example.frontServer.repository.user.UserRoleRepository
 import com.example.frontServer.security.AuthUserDetails
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails

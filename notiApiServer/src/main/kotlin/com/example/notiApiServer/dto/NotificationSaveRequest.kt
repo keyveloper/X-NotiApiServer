@@ -9,6 +9,6 @@ data class NotificationSaveRequest(
 
     val notificationType: NotificationType,
 
-    val boardId: Long?,
+    val targetBoardId: Long?,
 
     )

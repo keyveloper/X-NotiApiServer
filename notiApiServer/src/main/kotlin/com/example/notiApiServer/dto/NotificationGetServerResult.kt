@@ -13,7 +13,7 @@ data class NotificationGetServerResult(
 
     val notificationType: NotificationType,
 
-    val boardId: Long?,
+    val targetBoardId: Long?,
 
     val createdAt: LocalDateTime
 ) {
@@ -23,7 +23,7 @@ data class NotificationGetServerResult(
                 id = notification.id!!,
                 publisherId = notification.publisherId,
                 receiverId = notification.receiverId,
-                boardId = notification.boardId,
+                targetBoardId = notification.targetBoardId,
                 notificationType = notification.notificationType,
                 createdAt = notification.createdAt!!
             )

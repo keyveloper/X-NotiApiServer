@@ -1,10 +1,10 @@
 package com.example.notiApiServer.controller
 
-import com.example.notiApiServer.dto.NotificationSaveResponse
+import com.example.notiApiServer.dto.NotificationServerSaveResponse
 import com.example.notiApiServer.dto.NotificationGetRequest
 import com.example.notiApiServer.dto.NotificationGetServerResponse
 import com.example.notiApiServer.dto.NotificationSaveRequest
-import com.example.notiApiServer.enum.ServerResponseCode
+import com.example.notiApiServer.enum.MSAServerErrorCode
 import com.example.notiApiServer.service.NotificationService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
@@ -22,8 +22,8 @@ class NotificationController(
         return ResponseEntity.ok().body(
             NotificationGetServerResponse.of(
                 notificationService.findInitAll(receiverId),
-                null,
-                ServerResponseCode.SUCCESS
+                errorCode = MSAServerErrorCode.SUCCESS,
+                errorDetails = null
             )
         )
     }
@@ -35,8 +35,8 @@ class NotificationController(
         return ResponseEntity.ok().body(
             NotificationGetServerResponse.of(
                 notificationService.findPrevAll(request),
-                null,
-                ServerResponseCode.SUCCESS
+                errorCode = MSAServerErrorCode.SUCCESS,
+                errorDetails = null
             )
         )
     }
@@ -48,8 +48,8 @@ class NotificationController(
         return ResponseEntity.ok().body(
             NotificationGetServerResponse.of(
                 notificationService.findNextAll(request),
-                null,
-                ServerResponseCode.SUCCESS
+                errorCode = MSAServerErrorCode.SUCCESS,
+                errorDetails = null
             )
         )
     }
@@ -57,12 +57,12 @@ class NotificationController(
     @PostMapping("/notification/save")
     fun saveAll(
         @RequestBody requests: List<NotificationSaveRequest>
-    ): ResponseEntity<NotificationSaveResponse> {
+    ): ResponseEntity<NotificationServerSaveResponse> {
         return ResponseEntity.ok().body(
-            NotificationSaveResponse(
-                savedRow =         notificationService.saveAll(requests),
-                null,
-                ServerResponseCode.SUCCESS
+            NotificationServerSaveResponse(
+                savedRow = notificationService.saveAll(requests),
+                errorCode = MSAServerErrorCode.SUCCESS,
+                errorDetails = null
             )
         )
     }

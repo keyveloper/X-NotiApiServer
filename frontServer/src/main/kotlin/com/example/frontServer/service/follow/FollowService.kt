@@ -1,9 +1,10 @@
-package com.example.frontServer.service
+package com.example.frontServer.service.follow
 
-import com.example.frontServer.dto.UserSummaryDto
+import com.example.frontServer.dto.user.UserSummaryDto
 import com.example.frontServer.entity.Follow
-import com.example.frontServer.repository.FollowRepository
-import com.example.frontServer.repository.UserRepository
+import com.example.frontServer.exception.NotFoundEntityException
+import com.example.frontServer.repository.follow.FollowRepository
+import com.example.frontServer.repository.user.UserRepository
 import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
 
@@ -13,7 +14,7 @@ class FollowService(
     private val userRepository: UserRepository
 ) {
     @Transactional
-    fun save(followingName: String, followerId: Long): String {
+    fun save(followingName: String, followerId: Long) {
         val userId = userRepository.findIdByUsername(followingName)
         if (userId != null) {
             followRepository.save(
@@ -22,9 +23,9 @@ class FollowService(
                     followerId = followerId
                 )
             )
-            return "save success"
+        } else {
+            throw NotFoundEntityException("can't find follow target id: $followingName")
         }
-        return "Invalid Username"
     }
 
     @Transactional
@@ -33,7 +34,6 @@ class FollowService(
     ): List<UserSummaryDto>? {
         return followRepository.findFollowersByUsername(username)
             .map { UserSummaryDto.of(it) }
-
         // exception? unknown username?
     }
 
@@ -44,4 +44,5 @@ class FollowService(
         return followRepository.findFollowingsByUserId(username)
             .map { UserSummaryDto.of(it) }
     }
+
 }

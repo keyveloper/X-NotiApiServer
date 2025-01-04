@@ -19,7 +19,7 @@ class Notification(
 
     val notificationType: NotificationType,
 
-    val boardId: Long?,
+    val targetBoardId: Long?,
 
     @CreatedDate
     var createdAt: LocalDateTime?,

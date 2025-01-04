@@ -4,22 +4,21 @@ import com.example.notiApiServer.dto.error.MSAServerErrorDetails
 import com.example.notiApiServer.dto.error.MSAServerErrorResponse
 import com.example.notiApiServer.enum.MSAServerErrorCode
 
-data class NotificationGetServerResponse(
-    val serverResults: List<NotificationGetServerResult>,
+data class NotificationServerSaveResponse(
+    val savedRow: Int,
     override val errorDetails: MSAServerErrorDetails?,
     override val errorCode: MSAServerErrorCode
 ): MSAServerErrorResponse(errorDetails, errorCode) {
-    companion object{
+    companion object {
         fun of(
-            results: List<NotificationGetServerResult>,
-            errorCode: MSAServerErrorCode,
-            errorDetails: MSAServerErrorDetails?
-        ): NotificationGetServerResponse {
-            return NotificationGetServerResponse(
-                serverResults = results,
+            savedRow: Int,
+            errorDetails: MSAServerErrorDetails?,
+            errorCode: MSAServerErrorCode
+        ): NotificationServerSaveResponse {
+            return NotificationServerSaveResponse(
+                savedRow = savedRow,
                 errorDetails = errorDetails,
-                errorCode = errorCode
-            )
+                errorCode = errorCode)
         }
     }
 }
