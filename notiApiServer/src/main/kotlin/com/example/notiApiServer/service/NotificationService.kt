@@ -18,12 +18,12 @@ class NotificationService(
     }
 
     fun findPrevAll(request: NotificationGetRequest): List<NotificationGetServerResult> {
-        return notificationRepository.findPrevAll(request.receiverId, request.startId)
+        return notificationRepository.findPrevAll(request.receiverId, request.endId)
             .map { NotificationGetServerResult.of(it) }
     }
 
     fun findNextAll(request: NotificationGetRequest): List<NotificationGetServerResult> {
-        return notificationRepository.findNextAll(request.receiverId, request.endId)
+        return notificationRepository.findNextAll(request.receiverId, request.startId)
             .map { NotificationGetServerResult.of(it) }
     }
 

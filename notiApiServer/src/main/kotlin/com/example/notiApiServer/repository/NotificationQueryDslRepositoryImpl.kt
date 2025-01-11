@@ -19,22 +19,22 @@ class NotificationQueryDslRepositoryImpl(
             .fetch()
     }
 
-    override fun findPrevAll(receiverId: Long, startId: Long): List<Notification> {
+    override fun findPrevAll(receiverId: Long, endId: Long): List<Notification> {
         return jpaQueryFactory
             .selectFrom(notification)
             .where(notification.receiverId.eq(receiverId)
-                .and(notification.id.lt(startId))
+                .and(notification.id.gt(endId))
             )
             .orderBy(notification.id.desc())
             .limit(10)
             .fetch()
     }
 
-    override fun findNextAll(receiverId: Long, endId: Long): List<Notification> {
+    override fun findNextAll(receiverId: Long, startId: Long): List<Notification> {
         return jpaQueryFactory
             .selectFrom(notification)
             .where(notification.receiverId.eq(receiverId)
-                .and(notification.id.gt(endId))
+                .and(notification.id.lt(startId))
             )
             .orderBy(notification.id.desc())
             .limit(10)

@@ -66,6 +66,8 @@ dependencies {
     // Logger
     implementation("io.github.oshai:kotlin-logging-jvm:7.0.0")
 
+    // kafka
+    implementation("org.springframework.kafka:spring-kafka")
 }
 
 
