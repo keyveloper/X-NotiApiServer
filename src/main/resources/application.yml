@@ -22,18 +22,6 @@ spring:
         format_sql: true
     open-in-view: false
 
-  kafka:
-    bootstrap-servers: localhost:9092
-    consumer:
-      group-id: test-group
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
-      properties:
-        spring.json.trusted.packages: "*"
-        spring.json.type.mapping: "com.example.frontServer.dto.KafkaTestDto:com.example.notiApiServer.dto.KafkaTestDto"
-    listener:
-      ack-mode: record
-
 logging:
   level:
     org.springframework.data.jpa.domain.support.AuditingEntityListener: DEBUG

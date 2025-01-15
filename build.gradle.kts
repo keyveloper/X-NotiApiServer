@@ -67,7 +67,7 @@ dependencies {
     implementation("io.github.oshai:kotlin-logging-jvm:7.0.0")
 
     // kafka
-    implementation("org.springframework.kafka:spring-kafka")
+    implementation("org.apache.kafka:kafka-clients:3.5.1")
 }
 
 
