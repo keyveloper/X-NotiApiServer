@@ -4,7 +4,9 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 
 data class KafkaTestDto(
     val id: Long,
-    val message: String
+    val message: String,
+    val username: String?
 )
-
-val t: String
+// {"id": 1, "message": "hello?"}
+// nullable 처리 ?
+// {"id": 2, "message": "nullable?"} -- ㅇㅇ 잘되네 ㄱㄱ

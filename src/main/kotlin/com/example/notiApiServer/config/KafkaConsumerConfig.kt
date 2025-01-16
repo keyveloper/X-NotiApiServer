@@ -11,7 +11,7 @@ import java.util.*
 class KafkaConsumerConfig {
 
     @Bean
-    fun kafkaConsumerConfig(): Properties {
+    fun kafkaConsumerProperties(): Properties {
         return Properties().apply {
             put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "192.168.17.79:9092")
 
