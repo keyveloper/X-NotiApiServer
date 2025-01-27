@@ -1,4 +1,12 @@
 spring:
+  config:
+    import: application-kafka.yml
+  profiles:
+    group:
+      local: kafka-local-window
+      beta: kafka-beta-linux
+    default: local
+
   application:
     name: notiApiServer
 
@@ -20,6 +28,8 @@ spring:
     properties:
       hibernate:
         format_sql: true
+        jdbc:
+          batch_size: 30
     open-in-view: false
 
 logging:

@@ -19,7 +19,7 @@ class KafkaConsumerConfig {
             put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer::class.java.name)
             put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer::class.java.name)
 
-            put(ConsumerConfig.GROUP_ID_CONFIG, "window-noti-test-group")
+            put(ConsumerConfig.GROUP_ID_CONFIG, "noti-group")
 
             put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest")
 

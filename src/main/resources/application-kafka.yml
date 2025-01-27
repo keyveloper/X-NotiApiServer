@@ -1,0 +1,27 @@
+spring:
+  config:
+    activate:
+      on-profile: kafka-local-window
+  kafka:
+    consumer:
+      bootstrap-servers: 192.168.223.79:9092
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      group-id: noti-group
+      auto-offset-reset: earliest
+      enable-auto-commit: true
+
+---
+spring:
+  config:
+    activate:
+      on-profile: kafka-beta-linux
+
+  kafka:
+    consumer:
+      bootstrap-servers: 192.168.223.79:9092
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      group-id: noti-group
+      auto-offset-reset: earliest
+      enable-auto-commit: true

@@ -1,6 +1,7 @@
 package com.example.notiApiServer.service
 
-import com.example.notiApiServer.dto.KafkaTestDto
+import com.example.notiApiServer.dto.NotificationSaveRequest
+import com.example.notiApiServer.entity.Notification
 import com.example.notiApiServer.repository.NotificationRepository
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
@@ -9,6 +10,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecords
 import org.apache.kafka.clients.consumer.KafkaConsumer
 import org.springframework.boot.CommandLineRunner
 import org.springframework.stereotype.Service
+
 import java.time.Duration
 
 @Service
@@ -19,7 +21,7 @@ class KafkaConsumerRunner(
     private val logger = KotlinLogging.logger {}
 
     override fun run(vararg args: String?) {
-        val topicName = "window-test"
+        val topicName = "noti"
         kafkaConsumer.subscribe(listOf(topicName))
 
         logger.info {"consume starts"}
@@ -32,23 +34,22 @@ class KafkaConsumerRunner(
                         records.map { logger.info{"parsing record: ${it.value()}"} }
                         val testDtos = jsonToDto(records)
                         logger.info { "deserialization completed: ${testDtos}"}
+                        saveAll(testDtos)
                     }
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
-            } finally {
-                kafkaConsumer.close()
             }
         }.start()
     }
 
-    // json desrialization
-    fun jsonToDto(records: ConsumerRecords<String, String>): List<KafkaTestDto> {
-        // KafakTestDto
+    // json deserialization
+    fun jsonToDto(records: ConsumerRecords<String, String>): List<NotificationSaveRequest> {
+        // Kafka TestDto
         val objectMapper = jacksonObjectMapper()
         return try {
             records.map {
-                objectMapper.readValue<KafkaTestDto>(it.value())
+                objectMapper.readValue<NotificationSaveRequest>(it.value())
             }
         } catch (e: Exception) {
             logger.error { "ConsumerRunner error: jsonToDto failed ${e.message}" }
@@ -57,4 +58,18 @@ class KafkaConsumerRunner(
     }
 
     // save all ()
+    fun saveAll(requests: List<NotificationSaveRequest>) {
+        notificationRepository.saveAll(
+            requests.map {
+                Notification(
+                    id = null,
+                    publisherId = it.publisherId,
+                    receiverId = it.receiverId,
+                    notificationType = it.notificationType,
+                    targetBoardId = it.targetBoardId,
+                    createdAt = null
+                )
+            }
+        )
+    }
 }
