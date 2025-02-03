@@ -1,0 +1,22 @@
+<configuration>
+    <!-- 기본 설정을 포함 -->
+    <include resource="org/springframework/boot/logging/logback/base.xml" />
+
+    <!-- 추가: maxRetries 초과 레코드를 기록할 FileAppender -->
+    <appender name="MAX_RETRIES_FILE" class="ch.qos.logback.core.FileAppender">
+        <file>/var/log/myapp/max_retries_records.json</file>
+        <append>true</append>
+        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <layout class="ch.qos.logback.classic.PatternLayout">
+                <pattern>%msg%n</pattern>
+            </layout>
+        </encoder>
+    </appender>
+
+    <!-- error level의 log가 저장된다. -->
+    <logger name="com.example.notiApiServer.MaxRetriesLogger" level="ERROR" additivity="false">
+        <appender-ref ref="MAX_RETRIES_FILE" />
+    </logger>
+
+    <!-- 추가 설정이 필요한 경우 여기에 계속 작성 -->
+</configuration>
