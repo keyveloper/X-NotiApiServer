@@ -1,6 +1,7 @@
 package com.example.notiApiServer.service
 
 import com.example.notiApiServer.dto.NotificationSaveRequest
+import com.example.notiApiServer.dto.error.KafkaErrorDto
 import com.example.notiApiServer.entity.Notification
 import com.example.notiApiServer.repository.NotificationRepository
 import com.fasterxml.jackson.core.JsonProcessingException
@@ -14,6 +15,7 @@ import org.apache.kafka.common.TopicPartition
 import org.slf4j.LoggerFactory
 import org.springframework.dao.DataAccessException
 import org.springframework.stereotype.Service
+import org.slf4j.MDC
 
 import java.time.Duration
 
@@ -24,19 +26,10 @@ class KafkaConsumerRunner(
     private val notificationRepository: NotificationRepository
 ) {
     private val logger = KotlinLogging.logger {}
-    private val maxRetriesLogger = LoggerFactory.getLogger("com.example.notiApiServer.MaxRetriesLogger")
-
+    private val kafkaDlqLogger = LoggerFactory.getLogger("com.example.notiApiServer.DLQ")
 
     @Volatile
     private var consumerRunning = true
-
-    @Volatile
-    private var isPaused = false
-    private val pauseDurationMillis = 3000L // 3초 대기
-
-    // failure check
-    private val failureCountMap = mutableMapOf<Triple<String, Int, Long>, Int>()
-    private val maxRetries = 3
 
     fun poll(vararg args: String?) {
         logger.info {"start consumer runner poll ()"}
@@ -70,13 +63,16 @@ class KafkaConsumerRunner(
                     )
                     // save db
                     saveNoti(notification, record)
+
+                    val topicPartition = TopicPartition(record.topic(), record.partition())
+                    val offsetAndMetadata = OffsetAndMetadata(record.offset() + 1)
+                    kafkaConsumer.commitSync(mapOf(topicPartition to offsetAndMetadata))
+
                     // commit offset !
-                    kafkaConsumer.commitSync()
                     logger.info { "Record with offset ${record.offset()} processed and committed." }
                 } catch (e: JsonProcessingException) {
-                    logger.info {"parsing error occurred: $failureCountMap"}
-                    // not sync
-                    break
+                    // skip this record
+                    continue
                 }
             }
         }
@@ -84,6 +80,7 @@ class KafkaConsumerRunner(
 
     private fun recordToNotiSaveRequest(record: ConsumerRecord<String, String>): NotificationSaveRequest {
         val topic = record.topic()
+
         val partition = record.partition()
         val offset = record.offset()
         val json = record.value()
@@ -91,27 +88,34 @@ class KafkaConsumerRunner(
         try {
             return objectMapper.readValue<NotificationSaveRequest>(json)
         } catch (e: JsonProcessingException) {
-            val currentRetry = failureCountMap.getOrDefault(key, 0) + 1
-            logger.info {"current key ${key}, currentRetry: $currentRetry"}
-            failureCountMap[key] = currentRetry
-            if (currentRetry > maxRetries) {
-                logger.info {"current retry is over than $currentRetry > $maxRetries"}
+                logger.error {"toNotiSaveRequest parsing error"}
                 // save log
-                maxRetriesLogger.error(json)
+            val errorDto = KafkaErrorDto(
+                topic = topic,
+                value = json,
+                offset = offset
+            )
+            logKafkaDlqError(errorDto)
                 // offset -> +1 enforce
-                try {
-                    val topicPartition = TopicPartition(topic, partition)
-                    val offsetData = OffsetAndMetadata(offset + 1) // offset commit to next
-                    kafkaConsumer.commitSync(mapOf(topicPartition to offsetData))
-                    logger.info { "Committed offset $offset for partition $partition of topic $topic" }
-                    failureCountMap.remove(key)
-                } catch (e: Exception) {
-                    logger.error {"commit offset failure: (offset, partition, topic) ${offset}, $partition, $topic"}
-                }
-            }
+                val topicPartition = TopicPartition(topic, partition)
+                val offsetData = OffsetAndMetadata(offset + 1) // offset commit to next
+                kafkaConsumer.commitSync(mapOf(topicPartition to offsetData))
             throw e
         }
     }
+
+
+    private fun logKafkaDlqError(errorDto: KafkaErrorDto) {
+        try {
+            MDC.put("topic", errorDto.topic)
+            MDC.put("offset", errorDto.offset.toString())
+            MDC.put("value", errorDto.value)
+            kafkaDlqLogger.error("Kafka DLQ error occurred: {}", errorDto)
+        } finally {
+            MDC.clear()
+        }
+    }
+
 
     private fun saveNoti(noti: Notification, record: ConsumerRecord<String, String>) {
         val topicPartition = TopicPartition(record.topic(), record.partition())
@@ -120,29 +124,6 @@ class KafkaConsumerRunner(
             notificationRepository.save(noti)
         } catch (e: DataAccessException) {
             logger.error {"DB error occurred at ${offset}"}
-            pauseConsumption(topicPartition)
-            // pauseDurationMillis 만큼 대기한 후 resume 시도
-            Thread.sleep(pauseDurationMillis)
-            resumeConsumption(topicPartition)
-        }
-    }
-
-    private fun pauseConsumption(topicPartition: TopicPartition) {
-        if (!isPaused) {
-            kafkaConsumer.pause(listOf(topicPartition))
-            isPaused = true
-            logger.info { "Paused consumption for partition ${topicPartition.partition()} " +
-                    "of topic ${topicPartition.topic()}" }
-        }
-    }
-
-    private fun resumeConsumption(topicPartition: TopicPartition) {
-        if (isPaused) {
-            kafkaConsumer.resume(listOf(topicPartition))
-            isPaused = false
-            logger.info { "Resumed consumption for partition ${topicPartition.partition()} " +
-                    "of topic ${topicPartition.topic()}" }
-
         }
     }
 }

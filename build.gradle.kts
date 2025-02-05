@@ -68,6 +68,10 @@ dependencies {
 
     // kafka
     implementation("org.apache.kafka:kafka-clients:3.5.1")
+
+    // logstash Encoder
+    implementation("net.logstash.logback:logstash-logback-encoder:7.3")
+
 }
 
 
