@@ -15,7 +15,7 @@ class KafkaConsumerConfig {
         @Value("\${spring.kafka.consumer.bootstrap-servers}") kafkaBootstrapServers: String,
         @Value("\${spring.kafka.consumer.group-id}") groupId: String,
         @Value("\${spring.kafka.consumer.key-deserializer}") keyDeserializer: String,
-        @Value("\${spring.kafka.consumer.value-deserializer}") valueDeserializer: String,
+        @Value("\${spring.kafka.congsumer.value-deserializer}") valueDeserializer: String,
         @Value("\${spring.kafka.consumer.auto-offset-reset}") autoOffsetReset: String,
         @Value("\${spring.kafka.consumer.enable-auto-commit}") enableAutoCommit: Boolean,
     ): KafkaConsumer<String, String> {

@@ -11,7 +11,7 @@
     <!-- Linux 환경 (예: kafka-beta-linux 프로파일) -->
     <springProfile name="kafka-beta-linux">
         <!-- 리눅스 절대 경로 예시 -->
-        <property name="LOG_DIR" value="/home/spring/noti_api"/>
+        <property name="LOG_DIR" value="/home/spring"/>
     </springProfile>
 
     <!-- kafka DLQ -->
