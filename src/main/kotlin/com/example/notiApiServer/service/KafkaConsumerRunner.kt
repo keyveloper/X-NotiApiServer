@@ -41,8 +41,7 @@ class KafkaConsumerRunner(
         // Graceful shutdown을 위한 shutdown hook 등록
         Runtime.getRuntime().addShutdownHook(Thread {
             println("Shutdown initiated.")
-            consumerRunning = false
-            kafkaConsumer.wakeup() // poll 중인 쓰레드를 깨워서 종료
+            turnOff()
         })
 
         while (consumerRunning) {
@@ -62,7 +61,7 @@ class KafkaConsumerRunner(
                         createdAt = null
                     )
                     // save db
-                    saveNoti(notification, record)
+                    saveNoti(notification)
 
                     val topicPartition = TopicPartition(record.topic(), record.partition())
                     val offsetAndMetadata = OffsetAndMetadata(record.offset() + 1)
@@ -73,6 +72,8 @@ class KafkaConsumerRunner(
                 } catch (e: JsonProcessingException) {
                     // skip this record
                     continue
+                } catch (e: DataAccessException) {
+                    logger.error {"DB error occurred!! at offset: ${record.offset()}"}
                 }
             }
         }
@@ -117,13 +118,20 @@ class KafkaConsumerRunner(
     }
 
 
-    private fun saveNoti(noti: Notification, record: ConsumerRecord<String, String>) {
-        val topicPartition = TopicPartition(record.topic(), record.partition())
-        val offset = record.offset()
+    private fun saveNoti(noti: Notification) {
         try {
             notificationRepository.save(noti)
         } catch (e: DataAccessException) {
-            logger.error {"DB error occurred at ${offset}"}
+            throw e
         }
+    }
+
+    private fun turnOff() {
+        consumerRunning = false
+        kafkaConsumer.close()
+    }
+
+    private fun turnOn() {
+        // scheduling?
     }
 }

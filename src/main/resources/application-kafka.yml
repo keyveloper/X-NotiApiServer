@@ -4,10 +4,10 @@ spring:
       on-profile: kafka-local-window
   kafka:
     consumer:
-      bootstrap-servers: 192.168.198.79:9092
+      bootstrap-servers: 192.168.210.79:9092
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      group-id: noti-group
+      group-id: noti-local-group
       auto-offset-reset: earliest
       enable-auto-commit: false
 
@@ -20,10 +20,10 @@ spring:
 
   kafka:
     consumer:
-      bootstrap-servers: 192.168.198.79:9092
+      bootstrap-servers: localhost:9092
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      group-id: noti-group
+      group-id: noti-beta-group
       auto-offset-reset: earliest
       enable-auto-commit: false
 
