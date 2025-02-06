@@ -1,7 +1,7 @@
 package com.example.notiApiServer.service
 
 import com.example.notiApiServer.dto.NotificationSaveRequest
-import com.example.notiApiServer.dto.error.KafkaErrorDto
+import com.example.notiApiServer.dto.error.KafkaDlqRecord
 import com.example.notiApiServer.entity.Notification
 import com.example.notiApiServer.repository.NotificationRepository
 import com.fasterxml.jackson.core.JsonProcessingException
@@ -89,29 +89,33 @@ class KafkaConsumerRunner(
         try {
             return objectMapper.readValue<NotificationSaveRequest>(json)
         } catch (e: JsonProcessingException) {
-                logger.error {"toNotiSaveRequest parsing error"}
-                // save log
-            val errorDto = KafkaErrorDto(
+            logger.error {"toNotiSaveRequest parsing error"}
+            // save log
+            val errorDto = KafkaDlqRecord(
                 topic = topic,
                 value = json,
-                offset = offset
+                offset = offset,
+                revive = false,
+                reviveDate = null
             )
             logKafkaDlqError(errorDto)
-                // offset -> +1 enforce
-                val topicPartition = TopicPartition(topic, partition)
-                val offsetData = OffsetAndMetadata(offset + 1) // offset commit to next
-                kafkaConsumer.commitSync(mapOf(topicPartition to offsetData))
+            // offset -> +1 enforce
+            val topicPartition = TopicPartition(topic, partition)
+            val offsetData = OffsetAndMetadata(offset + 1) // offset commit to next
+            kafkaConsumer.commitSync(mapOf(topicPartition to offsetData))
             throw e
         }
     }
 
 
-    private fun logKafkaDlqError(errorDto: KafkaErrorDto) {
+    private fun logKafkaDlqError(dlqRecord: KafkaDlqRecord) {
         try {
-            MDC.put("topic", errorDto.topic)
-            MDC.put("offset", errorDto.offset.toString())
-            MDC.put("value", errorDto.value)
-            kafkaDlqLogger.error("Kafka DLQ error occurred: {}", errorDto)
+            MDC.put("topic", dlqRecord.topic)
+            MDC.put("offset", dlqRecord.offset.toString())
+            MDC.put("value", dlqRecord.value)
+            MDC.put("revive", dlqRecord.revive.toString())
+            MDC.put("reviveDate", dlqRecord.reviveDate.toString())
+            kafkaDlqLogger.error("Kafka DLQ error occurred: {}", dlqRecord)
         } finally {
             MDC.clear()
         }

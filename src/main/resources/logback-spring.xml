@@ -2,6 +2,18 @@
     <!-- 기본 설정을 포함 -->
     <include resource="org/springframework/boot/logging/logback/base.xml" />
 
+    <!-- Windows 환경 (예: kafka-local-window 프로파일) -->
+    <springProfile name="kafka-local-window">
+        <!-- 윈도우 절대 경로 예시 -->
+        <property name="LOG_DIR" value="C:\Users\dideh\Desktop\Spring\x\notiApiServer"/>
+    </springProfile>
+
+    <!-- Linux 환경 (예: kafka-beta-linux 프로파일) -->
+    <springProfile name="kafka-beta-linux">
+        <!-- 리눅스 절대 경로 예시 -->
+        <property name="LOG_DIR" value="/home/spring/noti_api"/>
+    </springProfile>
+
     <!-- kafka DLQ -->
     <appender name="KAFKA_DLQ" class="ch.qos.logback.classic.sift.SiftingAppender">
         <!--MDC의 topic을 사용한다. -->
@@ -13,10 +25,10 @@
             <!-- topic 별로 RollingFileAppender 생성 -->
             <appender name="FILE-${topic}" class="ch.qos.logback.core.rolling.RollingFileAppender">
                 <!-- 실제 로그 파일은 아래의 rolling policy에 의해 날짜별로 생성됨 -->
-                <file>log/kafka_dlq/${topic}/$d{yyyy-MM-dd}.json</file>
+                <file>${LOG_DIR}/log/kafka_dlq/${topic}/current.json</file>
                 <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
                     <!-- 파일명 패턴: log/kafka_dlq/{topic}/2025-02-05.json -->
-                    <fileNamePattern>log/kafka_dlq/${topic}/%d{yyyy-MM-dd}.json</fileNamePattern>
+                    <fileNamePattern>${LOG_DIR}/log/kafka_dlq/${topic}/%d{yyyy-MM-dd}.json</fileNamePattern>
                 </rollingPolicy>
                 <!-- LogstashEncoder를 이용해 JSON으로 인코딩 -->
                 <encoder class="net.logstash.logback.encoder.LogstashEncoder"/>
