@@ -1,12 +1,12 @@
 # 사용할 오픈JDK 버전을 명시적으로 지정 (예: 17.0.2)
-FROM docker.io/openjdk:17.0.11-jdk-slim
+FROM docker.io/openjdk:17.0.2-jdk-bullseye
 
 # 작업 디렉터리 설정
-WORKDIR /noti-server
+WORKDIR /like-server
 
 # Jenkins 빌드 결과로 생성된 JAR 파일을 컨테이너로 복사
 # (아래 예시 이름을 빌드 산출물의 실제 JAR 이름에 맞게 바꿔주세요)
-COPY X-FrontServer-0.0.1-SNAPSHOT.jar /noti-server/noti.jar
+COPY build/libs/X-NotiApiServer-0.0.1-SNAPSHOT.jar /noti-server/noti.jar
 
 # 컨테이너가 사용하는 포트 문서화 (예시 8080)
 EXPOSE 8080
