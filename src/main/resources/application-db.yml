@@ -1,0 +1,37 @@
+spring:
+  config:
+    import: application-db.yml
+  profiles:
+    group:
+      local: db-local-window,
+      beta: db-beta-linux
+
+  datasource:
+    url: jdbc:mariadb://localhost:3306/x?useSSL=false&useUnicode=true&characterEncoding=utf8&characterSetResults=utf8
+    username: root
+    password: 1234
+    driver-class-name: org.mariadb.jdbc.Driver
+    hikari:
+      connection-timeout: 20000
+      minimum-idle: 10
+      maximum-pool-size: 10
+      idle-timeout: 300000
+      pool-name: SpringBootJPAHikariCP
+
+---
+spring:
+  config:
+    activate:
+      on-profile: db-beta-linux
+
+  datasource:
+    url: jdbc:mariadb://192.168.1.11:3306/x?useSSL=false&useUnicode=true&characterEncoding=utf8&characterSetResults=utf8
+    username: root
+    password: 1234
+    driver-class-name: org.mariadb.jdbc.Driver
+    hikari:
+      connection-timeout: 20000
+      minimum-idle: 10
+      maximum-pool-size: 10
+      idle-timeout: 300000
+      pool-name: SpringBootJPAHikariCP
