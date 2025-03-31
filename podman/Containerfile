@@ -2,7 +2,7 @@
 FROM docker.io/openjdk:17.0.2-jdk-bullseye
 
 # 작업 디렉터리 설정
-WORKDIR /like-server
+WORKDIR /noti-server
 
 # Jenkins 빌드 결과로 생성된 JAR 파일을 컨테이너로 복사
 # (아래 예시 이름을 빌드 산출물의 실제 JAR 이름에 맞게 바꿔주세요)
